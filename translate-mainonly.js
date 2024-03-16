@@ -8,45 +8,40 @@
 // @match        https://fanyi.baidu.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
-// @require    https://cdn.staticfile.org/jquery/3.4.0/jquery.min.js
 // ==/UserScript==
+var e = document.body;
+const n = document.head.appendChild(document.createElement("style"));
+n.textContent = ".mainonly { outline: 2px solid red; }";
+const t = CSS.supports("selector(:has(*))");
 
-(function() {
-	'use strict';
-	var e = document.body;
-	const n = document.head.appendChild(document.createElement("style"));
-	n.textContent = ".mainonly { outline: 2px solid red; }";
-	const t = CSS.supports("selector(:has(*))");
+function o(n) {
+	n instanceof HTMLElement && (e.classList.remove("mainonly"), (e = n).classList.add("mainonly"))
+}
 
-	function o(n) {
-		n instanceof HTMLElement && (e.classList.remove("mainonly"), (e = n).classList.add("mainonly"))
+function a() {
+	if (t) {
+		n.textContent = ":not(:has(.mainonly), .mainonly, .mainonly *) { display: none; }";
+	} else {
+		n.textContent = ":not(.mainonly *, .mainonly-ancestor) { display: none; }";
+		var s = e;
+		do {
+			s.classList.add("mainonly-ancestor")
+		} while (s = s.parentElement)
 	}
-
-	function a() {
-		if (t) {
-			n.textContent = ":not(:has(.mainonly), .mainonly, .mainonly *) { display: none; }";
-		} else {
-			n.textContent = ":not(.mainonly *, .mainonly-ancestor) { display: none; }";
-			var s = e;
-			do {
-				s.classList.add("mainonly-ancestor")
-			} while (s = s.parentElement)
-		}
+}
+try {
+	console.log(`%c[translate-mainonly]已加载`, 'color: blue;font-size: large;font-weight: bold;');
+	var sss = null;
+	if (location.href.includes('cn.bing.com') && location.href.includes('q=%E7%BF%BB%E8%AF%91&')) {
+		sss = document.getElementsByClassName('tta_tbl')[0];
+	} else if (location.href.includes('fanyi.baidu.com')) {
+		sss = document.getElementsByClassName('translate-main')[0];
 	}
+	if (sss) {
+		o(sss);
+		a();
 
-
-
-	$(window).bind("load", function() {
-		var sss = null;
-		if (location.href.includes('cn.bing.com') && location.href.includes('%E7%BF%BB%E8%AF%91&')) {
-			sss = document.getElementsByClassName('tta_tbl')[0];
-		} else if (location.href.includes('https://fanyi.baidu.com/#glg/zh/')) {
-			sss = document.getElementsByClassName('translate-main')[0];
-		}
-		if (sss) {
-			o(sss);
-			a();
-
-		}
-	})
-})();
+	}
+} catch (ex) {
+	console.error(ex)
+}
